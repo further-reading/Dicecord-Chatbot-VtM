@@ -10,7 +10,6 @@ class Character:
         Class for holding details of a player and making their rolls.
         Args:
             ID (str): discord ID of player
-            splat (str): which gameline the player has set
             flavour (bool): whether flavour messaging is active
         """
 
@@ -47,8 +46,6 @@ class Character:
                 diceResults += f" {result}"
             else:
                 diceResults += f" {result}"
-
-
 
         if tenCount % 2 == 0:
             # even amount of 10s
