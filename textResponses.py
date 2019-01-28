@@ -1,20 +1,5 @@
 typetext = '''**roll**: a normal roll
-**rote**: a rote roll (failures rerolled once)
-**9again**: 9s explode!
-**8again**: 8s explode!
-**noagain**: Nothing explodes!
-**9againrote**: 9s explode and failures are rerolled once!
-**8againrote**: 8s explode and failures are rerolled once!
-**noagainrote**: Nothing explodes but failures are rerolled once!
-Example:
-@Dicecord roll 8
-Rolls 8 dice. Not a rotes, 10s explode!
-@Dicecord 9again 5
-Rolls 5 dice, 9s and 10s explode!
-To roll a chance die, write **chance**
-To roll a single die, but not as part of an action, write **one**
 
-Note that natural langauage commands also work. It will figure out the amount to roll based on the following logic, where x is the amount of dice to roll:
 1. Looks for a phrase like "roll x"
 2. Looks for a phrase like "9again/8again/noagain x"
 3. Takes first number after the @mention
@@ -22,14 +7,18 @@ Note that natural langauage commands also work. It will figure out the amount to
 '''
 
 helptext = '''**Commands must now include an @mention for the bot**
-To make a roll type **@Dicecord *type* *n*** where *n* is the number of dice you want to roll and *type* is the type of roll.
+To make a roll type **@Dicecord-VtM roll *n*** where *n* is the number of dice you want to roll.
 
 **Example:**
-@Dicecord roll 8
-Rolls 8 dice. Not a rote, 10s explode!
+@Dicecord-VtM roll 8
+Rolls 8 dice.
 
-There are special commands for chance rolls or generic single dice roll.
-Write **type** to me here to get a list of all valid roll types and commands.
+The bot can use simple natural language processing for rolling dice. For example, '
+
+1. Looks for a phrase like "roll x"
+2. Looks for a phrase like "9again/8again/noagain x"
+3. Takes first number after the @mention
+4. Takes first number in message
 
 Regardless of mode, by default the bot will send flavour text if you get 0 successes or 5+ successes.
 You can specify splat specific flavour text, for example you could set it so a Mage character gets Mage themed flavour text.
