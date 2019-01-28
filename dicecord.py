@@ -160,7 +160,6 @@ class DicecordBot:
 
         # Check for first number after @mention and then first number in message
         splitMessage = messageText.split('@' + self.client.user.name.lower())
-        print(self.client.user.name)
         for index in [-1, 0]:
             message = splitMessage[index]
             matched = re.search(r'\b[0-9]+\b', message)
@@ -195,10 +194,9 @@ class DicecordBot:
                     username = user.find('name').text
                     lasttime = user.find('time').text
                     lasttime = datetime.datetime.strptime(lasttime, "%Y-%m-%d %H:%M:%S.%f")
-                    splat = user.find('splat').text
                     flavour = user.find('flavour').text
 
-                    servers[servname][channelname][username] = [Character(username, splat, bool(flavour)), lasttime]
+                    servers[servname][channelname][username] = [Character(username, bool(flavour)), lasttime]
 
         self.servers = servers
 
