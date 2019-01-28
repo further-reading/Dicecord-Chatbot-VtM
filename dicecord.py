@@ -112,7 +112,7 @@ class DicecordBot:
     def pmCommands(self, message):
         command = message.content.lower()
 
-        if 'flavourhelp' in command:
+        if 'flavour' in command:
             return message.author, textResponses.flavText
 
         elif 'help' in command:
@@ -121,8 +121,11 @@ class DicecordBot:
         elif 'info' in command:
             return message.author, textResponses.aboutText
 
+        elif 'roll' in command:
+            return message.author, textResponses.rolltext
+
         else:
-            return message.author, "Write 'help' for help, 'info' for bot info or 'type' for list of roll types"
+            return message.author, "Write 'help' for help or 'info' for bot info."
 
     def parse_roll(self, player, message):
         """Checks text for type of roll, makes that roll."""
