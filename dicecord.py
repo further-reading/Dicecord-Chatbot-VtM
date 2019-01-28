@@ -61,6 +61,7 @@ class DicecordBot:
             self.errorText(message, "HTTP Exception")
 
     async def checkCommand(self, message):
+        username = self.client.user.name
         command = message.content.lower()
         if str(message.author) == self.me and "save" in command:
             # allows me to ask for a save of current settings at any time
@@ -76,29 +77,12 @@ class DicecordBot:
             return self.pmCommands(message)
 
         # we only want bot to respond to @mentions
-        if "@Dicecord" not in message.clean_content:
+        if f"@{username}" not in message.clean_content:
             return
 
         character = self.check_server(message)
 
-        if re.search("\\bone\\b",command):
-            # roll a single die, no successes calculated
-            result = character.roll_special()
-
-            # {0.author.mention} works better for bot implementation
-            out = result.replace(character.ID, "{0.author.mention}")
-            return message.channel, out.format(message)
-
-        elif "chance" in command:
-            results = character.roll_chance()
-
-            for result in results:
-                # {0.author.mention} works better for bot implementation
-                out = result.replace(character.ID, "{0.author.mention}")
-                await self.send(message.channel, out.format(message), message)
-                time.sleep(1)
-
-        elif 'roll' in command or 'again' in command or 'rote' in command:
+        if 'roll' in command:
             char = self.check_server(message)
             try:
                 results = self.parse_roll(char, message.clean_content)
@@ -115,11 +99,6 @@ class DicecordBot:
                 await self.send(message.channel, out.format(message), message)
                 time.sleep(1)
 
-        elif 'splat' in command:
-            out = self.set_splat(message)
-            if out:
-                return message.author, out.format(message)
-
         elif 'flavour' in command:
             out = self.set_flavour(message)
             if out:
@@ -133,10 +112,7 @@ class DicecordBot:
     def pmCommands(self, message):
         command = message.content.lower()
 
-        if 'type' in command:
-            return message.author, textResponses.typetext
-
-        elif 'flavourhelp' in command:
+        if 'flavourhelp' in command:
             return message.author, textResponses.flavText
 
         elif 'help' in command:
@@ -153,14 +129,7 @@ class DicecordBot:
 
         message = message.strip()
         message = message.lower()
-
-        againterm = re.search("(8|9|no)again", message)
-        if againterm:
-            again = againterm.group(0)
-        else:
-            again = None
-        
-        diceAmount = self.getDiceAmount(message, again)
+        diceAmount = self.getDiceAmount(message)
 
         if diceAmount is None:
             # stop if no dice number found
@@ -169,44 +138,25 @@ class DicecordBot:
         if diceAmount >= 300:
             return ["Too many dice. Please roll less than 300."]
 
-        if again:
-            if again =='8again':
-                return player.roll_set(diceAmount, again=8, rote="rote" in message, paradox="paradox" in message)
+        return player.roll_set(diceAmount)
 
-            elif again =='9again':
-                return player.roll_set(diceAmount, again=9, rote="rote" in message, paradox="paradox" in message)
-
-            elif again =='noagain':
-                # no again sets again to 11 so it is impossible to occur
-                return player.roll_set(diceAmount, again=11, rote="rote" in message, paradox="paradox" in message)
-
-        elif "rote" in message:
-            return player.roll_set(diceAmount, rote=True, paradox="paradox" in message)
-
-        elif 'roll' in message:
-            return player.roll_set(diceAmount, paradox="paradox" in message)
-
-    def getDiceAmount(self, messageText, again):
+    def getDiceAmount(self, messageText):
         """
-
+        Checks the message to figure out the maount of dice to roll
+        Natural language processing used based on following priority:
+        1. Check for roll x
+        2. Get first number after the @mention
+        3. Get first number in message
         Args:
             messageText (str): text of message
-            again (str or None): whether it is an again term
 
         Returns (int or None): amount of dice to roll
         """
 
-        if "roll" in messageText:
-            # First check for message of the form roll x
-            matched = re.search(r'(?<=\broll )[0-9]+\b', messageText)
-            if matched:
-                return int(matched.group())
-
-        if again:
-            # Second check for message of the form againTerm x
-            matched = re.search(f'(?<=\\b{again} )[0-9]+\\b', messageText)
-            if matched:
-                return int(matched.group())
+        # First check for message of the form roll x
+        matched = re.search(r'(?<=\broll )[0-9]+\b', messageText)
+        if matched:
+            return int(matched.group())
 
         # Check for first number after @mention and then first number in message
         splitMessage = messageText.split('@' + self.client.user.name.lower())
@@ -259,12 +209,6 @@ class DicecordBot:
         channel = message.channel.id
         author = message.author.id
 
-        if str(message.server) == "Under the Black Flag":  # being lazy and setting my game to mage
-            char = Character(author)
-            char.changeSplat('mage')
-            self.servers[server] = {channel: {author: [char, datetime.datetime.now()]}}
-            return char
-
         if server in self.servers:
             # check if channel is known
             if channel in self.servers[server]:
@@ -285,31 +229,6 @@ class DicecordBot:
             char = Character(author)
             self.servers[server] = {channel: {author: [char, datetime.datetime.now()]}}
         return char
-
-    def set_splat(self, message):
-        """Allows user to set game type for flavour text."""
-
-        char = self.check_server(message)
-        if "check" in message.content.lower():
-            if char.splat:
-                return "Splat is currently set to " + char.splat.upper() + " in server " + str(
-                    message.server) + " - " + str(message.channel)
-            else:
-                return "Splat is currently not set in server " + str(message.server) + " - " + str(message.channel)
-
-        else:
-            new_splat = self.find_splat(message.content.lower())
-            return char.changeSplat(new_splat) + str(message.server) + " - " + str(message.channel)
-
-    def find_splat(self, message):
-        if 'mage' in message:
-            return 'mage'
-        elif 'default' in message:
-            return 'default'
-        else:
-            match = re.search('splat', message)
-            location = match.span()
-            return message[location[1]+1:]
 
     def set_flavour(self, message):
         """Allows user to set existence of flavour text."""
@@ -386,10 +305,6 @@ class DicecordBot:
                     usename = Element('name')
                     use.append(usename)
                     usename.text = user
-
-                    splatname = Element('splat')
-                    use.append(splatname)
-                    splatname.text = self.servers[server][channel][user][0].splat
 
                     flavname = Element('flavour')
                     use.append(flavname)
