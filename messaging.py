@@ -9,7 +9,3 @@ badDefault = ["Don't blame your bad luck on me, [userID]! I'm just a random numb
               "[userID] rolls like a dairy farmer.",
               "Ask for a dramatic failure [userID], you know you want to!",
               "[userID], I hope that wasn't an important roll ..."]
-
-goodVampire = []
-
-badVampire = []
