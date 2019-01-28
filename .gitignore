@@ -1,5 +1,3 @@
-runDicecord.py
-runTest.py
 saver.py
 __pycache__/
 details.xml
@@ -7,3 +5,4 @@ details.xml
 saver.py
 Dicecord.png
 Dicecord-white.png
+run*.py
