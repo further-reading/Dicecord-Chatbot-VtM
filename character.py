@@ -40,10 +40,12 @@ class Character:
             result = random.randrange(1, 11)
             if result == 10:
                 tenCount += 1
-                diceResults += f" **{result}**"
+                diceResults += f" ***{result}***"
             elif result >= 6:
                 successes += 1
-                diceResults += f" {result}"
+                diceResults += f" **{result}**"
+            elif result == 1:
+                diceResults += f" *{result}*"
             else:
                 diceResults += f" {result}"
 
