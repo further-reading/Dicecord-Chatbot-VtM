@@ -48,4 +48,4 @@ aboutText = '''Dicecord is a python based bot for rolling dice following the Chr
 (c) Roy Healy. Distributed under GNU General Public License v3.0.
 Built using Discord.py package and running on Python 3.6.
 See https://github.com/further-reading/discord-dirceroller-bot for source code.
-Join us on Discord! https://discordapp.com/invite/DRM9MT8'''
+Join us on Discord https://discordapp.com/invite/DRM9MT8'''
