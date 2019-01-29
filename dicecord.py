@@ -342,10 +342,12 @@ def runner(token, me):
             bot.startBot()
             bot.client.run(bot.token)
         except KeyboardInterrupt:
+            print("here")
             bot.save_details()
             bot.loop.close()
             break
         except Exception as e:
+            print("there")
             print(datetime.datetime.now(), e)
             traceback.format_exc()
             bot.loop.close()
