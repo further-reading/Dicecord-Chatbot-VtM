@@ -342,12 +342,16 @@ def runner(token, me):
             bot.startBot()
             bot.client.run(bot.token)
         except KeyboardInterrupt:
-            print("here")
+            file = open("error.txt", "w")
+            print("here", file=file)
+            file.close()
             bot.save_details()
             bot.loop.close()
             break
         except:
-            print("there")
+            file = open("error.txt", "w")
+            print("there", file=file)
+            file.close()
             traceback.format_exc()
             bot.loop.close()
             bot.save_details()
