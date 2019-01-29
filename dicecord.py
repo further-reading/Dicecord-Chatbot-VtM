@@ -346,9 +346,8 @@ def runner(token, me):
             bot.save_details()
             bot.loop.close()
             break
-        except Exception as e:
+        except:
             print("there")
-            print(datetime.datetime.now(), e)
             traceback.format_exc()
             bot.loop.close()
             bot.save_details()
